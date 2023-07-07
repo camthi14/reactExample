@@ -23,7 +23,7 @@
     /* path */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["*"]
+      "~/*": ["src/*"]
     },
   },
   "include": ["src"],
