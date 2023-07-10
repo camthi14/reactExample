@@ -1,6 +1,6 @@
 import { Layout, Menu, theme } from "antd";
 import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import navConfig from "~/routes/navbar";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -10,22 +10,23 @@ const Main = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const locations = useLocation();
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout>
       <Sider
+        style={{ minHeight: "100vh", overflow: "hidden" }}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
       >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-          {navConfig.map((nav, index) => (
-            <Menu.Item key={index}>
-              <Link to={nav.path}>{nav.name}</Link>
-            </Menu.Item>
-          ))}
-        </Menu>
+        <Menu
+          selectedKeys={[locations.pathname]}
+          theme="dark"
+          mode="inline"
+          items={navConfig}
+        ></Menu>
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} />

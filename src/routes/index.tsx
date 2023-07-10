@@ -1,7 +1,13 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Main from "~/Layouts/Main";
-import { AddUser, ErrorPage, Home } from "~/pages";
-import { Paths } from "./navbar";
+import Loadable from "~/components/Loadable";
+import { ErrorPage } from "~/pages";
+import { Paths } from "~/types";
+
+const Home = Loadable(lazy(() => import("~/pages/Home")));
+const AddUser = Loadable(lazy(() => import("~/pages/AddUser")));
+const LoginV2 = Loadable(lazy(() => import("~/pages/LoginV2")));
 
 const router = createBrowserRouter([
   {
@@ -18,6 +24,11 @@ const router = createBrowserRouter([
         element: <AddUser />,
       },
     ],
+  },
+  {
+    path: Paths.Login,
+    element: <LoginV2 />,
+    errorElement: <ErrorPage />,
   },
 ]);
 
