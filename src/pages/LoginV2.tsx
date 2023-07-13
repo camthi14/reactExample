@@ -1,9 +1,18 @@
-import { Space } from "antd";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { authService } from "~/services";
-import "./login.css";
-import { Status } from "~/types";
+import { Button, Space } from "antd";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useState,
+  useLayoutEffect,
+} from "react";
+
+import { TextInput } from "~/components";
+import { LocalStorage, Paths, Status } from "~/types";
+import { authService } from "~/services";
+
+import "./login.css";
 
 const LoginV2: React.FC = () => {
   const [values, setValues] = useState<{
@@ -11,8 +20,15 @@ const LoginV2: React.FC = () => {
     password: string;
   }>({ email: "", password: "" });
 
+  const navigate = useNavigate();
   const [status, setStatus] = useState<Status>(Status.Ready);
   const [error, setError] = useState("");
+  const token = localStorage.getItem(LocalStorage.Token);
+
+  useLayoutEffect(() => {
+    if (!Boolean(token)) return;
+    navigate(Paths.Home, { replace: true });
+  }, [token]);
 
   const onFinish = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,7 +38,8 @@ const LoginV2: React.FC = () => {
       try {
         const response = await authService.login(values);
         setStatus(Status.Complete);
-        console.log(`response`, response);
+        localStorage.setItem(LocalStorage.Token, response.token);
+        navigate(Paths.Home, { replace: true });
         resolve(true);
       } catch (error) {
         setStatus(Status.Fail);
@@ -34,8 +51,6 @@ const LoginV2: React.FC = () => {
       }
     });
   };
-
-  console.log("status", status);
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -51,31 +66,36 @@ const LoginV2: React.FC = () => {
     <div className="space-align-container">
       <div className="space-align-block">
         <Space align="center">
-          {error && <p style={{ color: "red" }}>{error}</p>}
           <form action="" onSubmit={onFinish}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                onChange={onChangeInput}
-                value={values.email}
-                type="email"
-                name="email"
-                id="email"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                onChange={onChangeInput}
-                value={values.password}
-                type="password"
-                name="password"
-                id="password"
-              />
-            </div>
-            <button type="submit" disabled={status === Status.Start}>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <TextInput
+              autoComplete="hidden"
+              label="Email"
+              value={values.email}
+              name="email"
+              type="email"
+              placeholder="Vui lòng nhập email"
+              required
+              onChangeInput={onChangeInput}
+            />
+            <TextInput
+              autoComplete="hidden"
+              label="Password"
+              value={values.password}
+              name="password"
+              type="password"
+              placeholder="Vui lòng nhập password"
+              required
+              onChangeInput={onChangeInput}
+            />
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={status === Status.Start}
+            >
               {status === Status.Start ? "Loading" : "Đăng nhập"}
-            </button>
+            </Button>
           </form>
         </Space>
       </div>

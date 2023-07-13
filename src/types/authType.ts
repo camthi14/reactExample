@@ -6,3 +6,7 @@ export interface LoginInput {
 export enum AuthPaths {
   Login = "api/login",
 }
+
+export interface ResponseLogin {
+  token: string;
+}

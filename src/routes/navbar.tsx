@@ -20,12 +20,17 @@ const navConfig: MenuItem[] = [
   }),
   getItem({
     key: "",
-    label: "User",
+    label: "Quản lý người dùng",
     icon: <UserOutlined />,
     children: [
       getItem({
+        key: Paths.ListUser,
+        label: "Danh sách người dùng",
+        to: Paths.ListUser,
+      }),
+      getItem({
         key: Paths.AddUser,
-        label: "Add user",
+        label: "Thêm người dùng",
         to: Paths.AddUser,
       }),
     ],

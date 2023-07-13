@@ -1,8 +1,8 @@
-import { AuthPaths, LoginInput } from "~/types";
+import { AuthPaths, LoginInput, ResponseLogin } from "~/types";
 import instance from "./axios";
 
 const authService = {
-  login: (data: LoginInput) => {
+  login: (data: LoginInput): Promise<ResponseLogin> => {
     return instance.post(AuthPaths.Login, data);
   },
 };
